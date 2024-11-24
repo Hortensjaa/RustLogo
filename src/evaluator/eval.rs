@@ -115,11 +115,12 @@ pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) {
             let f = env.get_fun(name);
             match f.unwrap() { 
                 Block::Function(_, params, instructions) => {
-                    match env.update_many_vars(params, args.clone()) {
+                    match env.update_many_vars(params.clone(), args.clone()) {
                         Ok(_) => {
                             for instruction in &instructions {
                                 eval_block(instruction, turtle, env);
                             }
+                            env.remove_many_var(params);
                         }
                         Err(_) => {eprintln!("Wrong number of arguments")}
                     }

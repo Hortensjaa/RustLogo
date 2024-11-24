@@ -21,7 +21,7 @@ impl Env {
     pub fn get_var(&self, var_name: &str) -> Result<Unit, String>  {
         match self.vars.get(var_name) {
             Some(value) => Ok(value.clone()),
-            None => Err("Value not in environment".to_string()),
+            None => Err("Value {} not in environment".to_string()),
         }
     }
 
@@ -52,7 +52,7 @@ impl Env {
     pub fn get_fun(&self, fun_name: &str) -> Result<Block, String> {
         match self.functions.get(fun_name) {
             Some(value) => Ok(value.clone()),
-            None => Err("Value not in environment".to_string()),
+            None => Err("Function definition not in environment".to_string()),
         }
     }
 

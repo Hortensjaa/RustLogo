@@ -1,0 +1,10 @@
+to square :length 
+    repeat 4 [ fd :length rt 90 ] 
+end 
+
+to randomcolor 
+    setcolor "green 
+end 
+
+clearscreen 
+repeat 36 [ randomcolor square random 100 rt 10 ]
