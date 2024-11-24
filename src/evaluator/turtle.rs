@@ -86,13 +86,7 @@ impl Turtle {
         self.lines.clear();
     }
 
-    pub fn change_color(&mut self, color: &str) {
-        let allowed_colors = ["red", "green", "blue", "black", "white", "purple"];
-        if allowed_colors.contains(&color.to_lowercase().as_str()) {
-            self.pen_color = color.to_string();
-        } else {
-            eprintln!("Error: Invalid color '{}'. Allowed colors are: {:?}", color, allowed_colors);
-        }
+    pub fn change_color(&mut self, color: String) {
+        self.pen_color = color;
     }
-
 }

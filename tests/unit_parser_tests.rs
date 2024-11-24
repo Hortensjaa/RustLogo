@@ -33,6 +33,22 @@ fn test_parse_var() {
 }
 
 #[test]
+fn test_parse_random() {
+    let test_cases = vec![
+        ("random 200", Unit::Random(Box::new(Unit::Val(200.0)))),
+        ("Rm :times", Unit::Random(Box::new(Unit::Var("times".to_string())))),
+    ];
+
+    for (input, expected) in test_cases {
+        let result = parse_unit(input);
+        match result {
+            Ok((_, unit)) => assert_eq!(unit, expected),
+            Err(_) => panic!("Błąd parsowania dla '{}'", input),
+        }
+    }
+}
+
+#[test]
 fn test_parse_expression() {
     let test_cases = vec![
         ("9.5 / 3", Unit::Exp(

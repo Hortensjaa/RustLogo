@@ -18,7 +18,10 @@ Program [
 Program = vector of blocks
 Block = REPEAT loop | IF block | function definition | function call (/src/parser/block)
 Command = LEFT | RIGHT | etc. (/src/parser/command)
-Unit = Value | Variable | Expression that will need further evaluation e.g. ":steps / 3" (/src/parser/unit)
+Unit (/src/parser/unit) =  Value 
+        | Variable 
+        | Expression that will need further evaluation e.g. ":steps / 3" 
+        | Random (a little tricky, but makes sense to me - it is a numeric value, but will be chosen in eval)
 
 ## Evaluator
 Then, I evaluate them (/src/evaluator) from the abstract tree:
@@ -38,3 +41,10 @@ Drawing history of lines to .svg file using svg library; images are saved in /im
 Note to myself: next time create tests in /src subdirectories, to avoid a lot of imports and public objects :<.
 However, everything is tested at list for mvp.
 /tests
+
+# Todos
+- evaluation of more advanced expressions e.g. repcount * repcount / 30 (no idea how to parse it)
+- pick [ red orange yellow green blue violet ] (parsing list of strings will destroy my unit parser)
+- stop (i need to add it to evaluator, but idk how it really works, because it is more like return than break)
+- new line in parser ()
+- clean it, especially converting back and forth between u32 and f64 (just joking, i won't do it)

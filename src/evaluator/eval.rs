@@ -1,10 +1,10 @@
 use crate::parser::block::Condition;
-
 use super::super::parser::unit::Unit;
 use super::super::parser::command::Command;
 use super::super::parser::block::Block;
 use super::turtle::Turtle;
 use super::environment::Env;
+use rand::Rng;
 
 
 pub fn eval_unit(unit: Unit, env: Env) -> f64 {
@@ -31,6 +31,12 @@ pub fn eval_unit(unit: Unit, env: Env) -> f64 {
                     0.0
                 }
             }
+        },
+        Unit::Random(bound) => {
+            let bound_val = eval_unit(*bound, env.clone()) as u32;
+            let mut rng = rand::thread_rng();
+            let random_number: u32 = rng.gen_range(1..bound_val);
+            random_number as f64
         }
     }
 }
@@ -57,6 +63,9 @@ pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) {
         }
         Command::PenDown() => {
             turtle.move_pen("down");
+        },
+        Command::SetColor(color) => {
+            turtle.change_color(color);
         }
         _ => {}
     }

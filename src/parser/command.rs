@@ -1,9 +1,11 @@
 use nom::{
     branch::alt,
-    bytes::complete::tag_no_case,
+    bytes::complete::{tag_no_case, tag, take_while1},
     character::complete::space1,
+    combinator::map, 
     IResult,
 };
+use std::collections::HashSet;
 
 use super::unit::{parse_unit, Unit};
 
@@ -16,7 +18,11 @@ pub enum Command {
     Wait(Unit),
     ClearScreen(),
     PenUp(),
-    PenDown()
+    PenDown(),
+    SetColor(String),
+    Stop(),
+    HideTurtle(),
+    ShowTurtle()
 }
 
 fn parse_forward(input: &str) -> IResult<&str, Command> {
@@ -69,6 +75,41 @@ fn parse_pendown(input: &str) -> IResult<&str, Command> {
     Ok((input, Command::PenDown()))
 }
 
+fn parse_stop(input: &str) -> IResult<&str, Command> {
+    let (input, _) = alt((tag_no_case("stop"), tag_no_case("sp")))(input)?;
+    Ok((input, Command::Stop()))
+}
+
+fn parse_showturtle(input: &str) -> IResult<&str, Command> {
+    let (input, _) = tag_no_case("showturtle")(input)?;
+    Ok((input, Command::ShowTurtle()))
+}
+
+fn parse_hideturtle(input: &str) -> IResult<&str, Command> {
+    let (input, _) = tag_no_case("hideturtle")(input)?;
+    Ok((input, Command::HideTurtle()))
+}
+
+fn parse_setcolor(input: &str) -> IResult<&str, Command> {
+    let allowed_colors: HashSet<&str> = [
+        "black", "blue", "green", "cyan", "red", "magenta", 
+        "yellow", "white", "brown", "tan", "aqua", "salmon", 
+        "purple", "orange", "gray"
+    ].iter().cloned().collect();
+
+    let (input, _) = alt((tag_no_case("setcolor"), tag_no_case("sc")))(input)?;
+    let (input, _) = space1(input)?;
+    let (input, _) = tag("\"")(input)?;
+    
+    let (input, color) = take_while1(|c: char| c.is_alphanumeric() || c == '_')(input)?;
+
+    if allowed_colors.contains(color) {
+        Ok((input, Command::SetColor(color.to_string())))
+    } else {
+        Err(nom::Err::Error(nom::error::Error::new(input, nom::error::ErrorKind::Tag)))
+    }
+}
+
 pub fn parse_command(input: &str) -> IResult<&str, Command> {
     alt((
         parse_forward, 
@@ -78,7 +119,11 @@ pub fn parse_command(input: &str) -> IResult<&str, Command> {
         parse_clearscreen,
         parse_wait,
         parse_pendown,
-        parse_penup
+        parse_penup,
+        parse_setcolor,
+        parse_stop,
+        parse_showturtle,
+        parse_hideturtle
     ))(input)
 }
 

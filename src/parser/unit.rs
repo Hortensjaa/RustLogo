@@ -1,7 +1,7 @@
 use nom::{
     branch::alt, 
-    bytes::complete::{tag, take_while1}, 
-    character::complete::{digit1, space0, char}, 
+    bytes::complete::{tag, take_while1, tag_no_case}, 
+    character::complete::{digit1, space0, char, space1}, 
     combinator::{map, map_res}, 
     sequence::tuple, 
     IResult
@@ -11,7 +11,16 @@ use nom::{
 pub enum Unit {
     Val(f64),  // constant value - number (positive integer or positive float)
     Var(String), // variable name
+    Random(Box<Unit>), // random value
     Exp(Box<Unit>, String, Box<Unit>) // expression, eg :size / 3
+}
+
+
+fn parse_random(input: &str) -> IResult<&str, Unit> {
+    let (input, _) = alt((tag_no_case("random"), tag_no_case("rm")))(input)?;
+    let (input, _) = space1(input)?;
+    let (input, value) = parse_unit(input)?;
+    Ok((input, Unit::Random(Box::new(value))))
 }
 
 fn parse_number(input: &str) -> IResult<&str, Unit> {
@@ -59,5 +68,5 @@ fn parse_expression(input: &str) -> IResult<&str, Unit> {
 }
 
 pub fn parse_unit(input: &str) -> IResult<&str, Unit> {
-    alt((parse_expression, parse_number, parse_variable))(input)
+    alt((parse_expression, parse_number, parse_variable, parse_random))(input)
 }

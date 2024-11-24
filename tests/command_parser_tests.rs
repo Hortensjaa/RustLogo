@@ -24,6 +24,7 @@ fn test_parse_commands() {
     let test_cases = vec![
         ("lt 100", Command::Left(Unit::Val(100.0))),
         ("rt :size", Command::Right(Unit::Var("size".to_string()))),
+        ("setcolor \"blue", Command::SetColor("blue".to_string())),
         ("rIgHt :size * 3", 
             Command::Right(
                 Unit::Exp(
@@ -59,6 +60,9 @@ fn test_parse_no_args() {
         ("clearscreen", Command::ClearScreen()),
         ("PENUP", Command::PenUp()),
         ("penDown", Command::PenDown()),
+        ("stop", Command::Stop()),
+        ("showturtle", Command::ShowTurtle()),
+        ("HIDETURTLE", Command::HideTurtle()),
     ];
 
     for (input, expected) in test_cases {
@@ -72,7 +76,7 @@ fn test_parse_no_args() {
 
 #[test]
 fn test_parse_invalid() {
-    let invalid_inputs = vec!["idk 200", "fd-100", "fd", "FORWARD"];
+    let invalid_inputs = vec!["idk 200", "fd-100", "fd", "FORWARD", "setcolor \"cat"];
 
     for input in invalid_inputs {
         let result = parse_command(input);
