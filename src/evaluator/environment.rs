@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
-use super::super::parser::unit::Unit;
 use super::super::parser::block::Block;
 
 // wrapper for local environment inside block
 #[derive(Debug, PartialEq, Clone)]
 pub struct Env {
-    vars: HashMap<String, Unit>,
+    vars: HashMap<String, f64>,
     functions: HashMap<String, Block>
 }
 
@@ -18,18 +17,18 @@ impl Env {
         }
     }
 
-    pub fn get_var(&self, var_name: &str) -> Result<Unit, String>  {
+    pub fn get_var(&self, var_name: &str) -> Result<f64, String>  {
         match self.vars.get(var_name) {
             Some(value) => Ok(value.clone()),
             None => Err("Value {} not in environment".to_string()),
         }
     }
 
-    pub fn set_var(&mut self, var_name: String, val: Unit) {
+    pub fn set_var(&mut self, var_name: String, val: f64) {
         self.vars.insert(var_name, val);
     }
 
-    pub fn update_many_vars(&mut self, params: Vec<String>, args: Vec<Unit>) -> Result<(), String> {
+    pub fn update_many_vars(&mut self, params: Vec<String>, args: Vec<f64>) -> Result<(), String> {
         if params.len() != args.len() {
             return Err("Number of parameters and arguments do not match".to_string());
         }
@@ -41,18 +40,18 @@ impl Env {
         Ok(())
     }
 
-    pub fn remove_var(&mut self, var_name: &str) -> Option<Unit> {
+    pub fn remove_var(&mut self, var_name: &str) -> Option<f64> {
         self.vars.remove(var_name)
     }
 
-    pub fn remove_many_var(&mut self, params: Vec<String>) -> Vec<Option<Unit>> {
+    pub fn remove_many_var(&mut self, params: Vec<String>) -> Vec<Option<f64>> {
         params.into_iter().map(|key| self.vars.remove(&key)).collect()
     }
 
     pub fn get_fun(&self, fun_name: &str) -> Result<Block, String> {
         match self.functions.get(fun_name) {
             Some(value) => Ok(value.clone()),
-            None => Err("Function definition not in environment".to_string()),
+            None => Err(format!("Function '{}' not found in environment", fun_name)),
         }
     }
 

@@ -12,7 +12,7 @@ pub fn eval_unit(unit: Unit, env: Env) -> f64 {
         Unit::Val(n) => n,
         Unit::Var(s) => 
             match env.get_var(&s) {
-                Ok(val) => eval_unit(val, env), 
+                Ok(val) => val, 
                 Err(e) => {
                     eprintln!("Error: {}", e);
                     0.0  
@@ -41,7 +41,7 @@ pub fn eval_unit(unit: Unit, env: Env) -> f64 {
     }
 }
 
-pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) {
+pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) -> Option<()>  {
     match command {
         Command::Left(unit) => {
             turtle.rotate("left", eval_unit(unit, env));
@@ -67,8 +67,10 @@ pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) {
         Command::SetColor(color) => {
             turtle.change_color(color);
         }
+        Command::Stop() => {return None},
         _ => {}
     }
+    Some(())
 }
 
 
@@ -86,15 +88,19 @@ fn eval_condition(cond: Condition, env: Env) -> bool {
     }
 }
 
-pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) {
+pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) -> Option<()> {
     match block {
         Block::Single(c) => {
-            eval_command(c.clone(), turtle, env.clone());
+            if eval_command(c.clone(), turtle, env.clone()).is_none() {
+                return None; 
+            }
         },
         Block::If(c, instructions) => {
             if eval_condition(c.clone(), env.clone()) {
                 for instruction in instructions {
-                    eval_block(instruction, turtle, env);
+                    if eval_block(instruction, turtle, env).is_none() {
+                        return None; 
+                    }
                 }
             }
         },
@@ -103,7 +109,9 @@ pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) {
             let mut i = 0.0;
             while i < n {
                 for instruction in instructions {
-                    eval_block(instruction, turtle, env);
+                    if eval_block(instruction, turtle, env).is_none() {
+                        return None; 
+                    }
                 }
                 i += 1.0;
             }
@@ -112,27 +120,37 @@ pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) {
             env.set_fun(name.to_string(), block.clone());
         },
         Block::Call(name, args) => {
-            let f = env.get_fun(name);
-            match f.unwrap() { 
+            let f = env.get_fun(name); 
+                let evaluated_args: Vec<f64> = args.iter()
+                .map(|arg| eval_unit(arg.clone(), env.clone())) 
+                .collect();
+            println!("{} called with args: {:#?}", name, evaluated_args);
+            match f.unwrap() {
                 Block::Function(_, params, instructions) => {
-                    match env.update_many_vars(params.clone(), args.clone()) {
+                    match env.update_many_vars(params.clone(), evaluated_args) {
                         Ok(_) => {
                             for instruction in &instructions {
-                                eval_block(instruction, turtle, env);
+                                if eval_block(instruction, turtle, env).is_none() {
+                                    return None; 
+                                }
                             }
                             env.remove_many_var(params);
                         }
-                        Err(_) => {eprintln!("Wrong number of arguments")}
+                        Err(_) => { eprintln!("Wrong number of arguments") }
                     }
                 },
-                _ => {eprintln!("Not a function")}
+                _ => { eprintln!("Not a function") }
             }
         },
     }
+    Some(()) 
 }
+
 
 pub fn eval(blocks: Vec<Block>, turtle: &mut Turtle, env: &mut Env) {
     for block in blocks {
-        eval_block(&block, turtle, env)
+        if eval_block(&block, turtle, env).is_none() {
+            break;
+        }
     }
 }

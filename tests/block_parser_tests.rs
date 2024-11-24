@@ -29,11 +29,11 @@ fn test_parse_condition() {
     );
 
     assert_eq!(
-        parse_condition("10 > :value"),
+        parse_condition("-10 > :value"),
         Ok((
             "",
             Condition {
-                left: Unit::Val(10.0),
+                left: Unit::Val(-10.0),
                 operator: ">".to_string(),
                 right: Unit::Var("value".to_string()),
             }
@@ -43,7 +43,7 @@ fn test_parse_condition() {
 
 #[test]
 fn test_parse_repeat() {
-    let input = "repeat 5 [ fd 100 rt 144 ]";
+    let input = "repeat 5 [ fd -100 rt 144 ]";
     assert_eq!(
         parse_block(input),
         Ok((
@@ -51,7 +51,7 @@ fn test_parse_repeat() {
             Block::Repeat(
                 Unit::Val(5.0),
                 vec![
-                    Block::Single(Command::Forward(Unit::Val(100.0))),
+                    Block::Single(Command::Forward(Unit::Val(-100.0))),
                     Block::Single(Command::Right(Unit::Val(144.0))),
                 ]
             )
@@ -83,7 +83,7 @@ fn test_parse_if() {
 
 #[test]
 fn test_nested_expressions() {
-    let input = "if :size > 5 [ repeat 5 [ fd 100 rt 144 ] ]";
+    let input = "if :size > 5 [ repeat 5 [ fd 100 rt -144 ] ]";
     assert_eq!(
         parse_block(input),
         Ok((
@@ -99,7 +99,7 @@ fn test_nested_expressions() {
                         Unit::Val(5.0), 
                         vec![
                             Block::Single(Command::Forward(Unit::Val(100.0))),
-                            Block::Single(Command::Right(Unit::Val(144.0))),
+                            Block::Single(Command::Right(Unit::Val(-144.0))),
                         ]
                     )
                 ]

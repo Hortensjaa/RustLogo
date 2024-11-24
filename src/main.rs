@@ -16,7 +16,7 @@ fn create_image(file_name: &str, size_x: f64, size_y: f64) {
         }
     };
     program_code.replace("\r\n\t", " ").trim().to_string();
-    println!("File content: {}", program_code); // debug
+    // println!("File content: {}", program_code); // debug
 
     // parse
     let parse = parser::program::parse_program(&program_code);
@@ -41,6 +41,6 @@ fn create_image(file_name: &str, size_x: f64, size_y: f64) {
 
 
 fn main() {
-    create_image("kwadraty", 800.0, 600.0);
+    create_image("drzewko", 800.0, 600.0);
 }
 

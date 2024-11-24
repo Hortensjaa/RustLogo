@@ -22,7 +22,8 @@ pub enum Command {
     SetColor(String),
     Stop(),
     HideTurtle(),
-    ShowTurtle()
+    ShowTurtle(),
+    Window()
 }
 
 fn parse_forward(input: &str) -> IResult<&str, Command> {
@@ -90,6 +91,11 @@ fn parse_hideturtle(input: &str) -> IResult<&str, Command> {
     Ok((input, Command::HideTurtle()))
 }
 
+fn parse_window(input: &str) -> IResult<&str, Command> {
+    let (input, _) = tag_no_case("window")(input)?;
+    Ok((input, Command::Window()))
+}
+
 fn parse_setcolor(input: &str) -> IResult<&str, Command> {
     let allowed_colors: HashSet<&str> = [
         "black", "blue", "green", "cyan", "red", "magenta", 
@@ -123,7 +129,8 @@ pub fn parse_command(input: &str) -> IResult<&str, Command> {
         parse_setcolor,
         parse_stop,
         parse_showturtle,
-        parse_hideturtle
+        parse_hideturtle,
+        parse_window
     ))(input)
 }
 

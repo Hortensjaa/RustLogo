@@ -32,7 +32,9 @@ Evaluation (/src/evaluator/eval) is done on structure levels:
 - unit evaluation: calculating numeric value of unit
 - command evaluation: updating turtle model
 - block evaluation: more advanced evaluation logic
-- program evaluation: program is just a list of blocks, so nothing special here
+- program evaluation: program is just a list of blocks, so nothing special here.
+Important thing is the fact, that on every level of evaluation we pass Option<> from lower level, because of Stop() logic (if command
+is stop, I pass None instead of Some to upper levels and stop execution)
 
 ## Draw
 Drawing history of lines to .svg file using svg library; images are saved in /images directory.
@@ -43,8 +45,10 @@ However, everything is tested at list for mvp.
 /tests
 
 # Todos
-- evaluation of more advanced expressions e.g. repcount * repcount / 30 (no idea how to parse it)
+- evaluation of more advanced expressions e.g. repcount * repcount / 30 (no idea how to parse it, for now i have workaround with changing to decimal)
 - pick [ red orange yellow green blue violet ] (parsing list of strings will destroy my unit parser)
-- stop (i need to add it to evaluator, but idk how it really works, because it is more like return than break)
-- new line in parser ()
 - clean it, especially converting back and forth between u32 and f64 (just joking, i won't do it)
+- recursive functions: restoring history of environment is the problem, cuz at the end of function i just delete them;
+I can probably workaround with history of every variable in stack and pop of it but i rather have 2 points less, than spend 2 hours more on this XD
+
+

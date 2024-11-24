@@ -15,7 +15,7 @@ fn test_eval_unit_val() {
 #[test]
 fn test_eval_unit_var() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
+    env.set_var("x".to_string(), 10.0);
     let unit = Unit::Var("x".to_string());
     
     let result = eval_unit(unit, env);
@@ -36,8 +36,8 @@ fn test_eval_unit_var_not_found() {
 #[test]
 fn test_eval_unit_exp_add() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
-    env.set_var("y".to_string(), Unit::Val(5.0));
+    env.set_var("x".to_string(), 10.0);
+    env.set_var("y".to_string(), 5.0);
     
     let expr = Unit::Exp(
         Box::new(Unit::Var("x".to_string())),
@@ -53,8 +53,8 @@ fn test_eval_unit_exp_add() {
 #[test]
 fn test_eval_unit_exp_subtract() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
-    env.set_var("y".to_string(), Unit::Val(5.0));
+    env.set_var("x".to_string(), 10.0);
+    env.set_var("y".to_string(), 5.0);
     
     let expr = Unit::Exp(
         Box::new(Unit::Var("x".to_string())),
@@ -70,8 +70,8 @@ fn test_eval_unit_exp_subtract() {
 #[test]
 fn test_eval_unit_exp_multiply() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
-    env.set_var("y".to_string(), Unit::Val(5.0));
+    env.set_var("x".to_string(), 10.0);
+    env.set_var("y".to_string(), 5.0);
     
     let expr = Unit::Exp(
         Box::new(Unit::Var("x".to_string())),
@@ -87,8 +87,8 @@ fn test_eval_unit_exp_multiply() {
 #[test]
 fn test_eval_unit_exp_divide() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
-    env.set_var("y".to_string(), Unit::Val(5.0));
+    env.set_var("x".to_string(), 10.0);
+    env.set_var("y".to_string(), 5.0);
     
     let expr = Unit::Exp(
         Box::new(Unit::Var("x".to_string())),
@@ -104,8 +104,8 @@ fn test_eval_unit_exp_divide() {
 #[test]
 fn test_eval_unit_exp_unknown_operator() {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(10.0));
-    env.set_var("y".to_string(), Unit::Val(5.0));
+    env.set_var("x".to_string(), 10.0);
+    env.set_var("y".to_string(), 5.0);
     
     let expr = Unit::Exp(
         Box::new(Unit::Var("x".to_string())),

@@ -5,6 +5,8 @@ fn test_parse_val() {
     let test_cases = vec![
         ("100.57", Unit::Val(100.57)),
         ("67", Unit::Val(67.0)),
+        ("-67", Unit::Val(-67.0)),
+        ("-67.96", Unit::Val(-67.96)),
     ];
 
     for (input, expected) in test_cases {
@@ -51,18 +53,18 @@ fn test_parse_random() {
 #[test]
 fn test_parse_expression() {
     let test_cases = vec![
-        ("9.5 / 3", Unit::Exp(
+        ("9.5 / -3", Unit::Exp(
             Box::new(Unit::Val(9.5)),
             "/".to_string(),
-            Box::new(Unit::Val(3.0))
+            Box::new(Unit::Val(-3.0))
         )),
         (":size * 3", Unit::Exp(
             Box::new(Unit::Var("size".to_string())),
             "*".to_string(),
             Box::new(Unit::Val(3.0))
         )),
-        ("2.14 + :times", Unit::Exp(
-            Box::new(Unit::Val(2.14)),
+        ("-2.14 + :times", Unit::Exp(
+            Box::new(Unit::Val(-2.14)),
             "+".to_string(),
             Box::new(Unit::Var("times".to_string()))
         )),

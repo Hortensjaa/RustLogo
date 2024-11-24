@@ -1,15 +1,15 @@
 use nom::{
     branch::alt, 
-    bytes::complete::{tag, take_while1, tag_no_case}, 
-    character::complete::{digit1, space0, char, space1}, 
-    combinator::{map, map_res}, 
+    bytes::complete::{tag, tag_no_case, take_while1}, 
+    character::complete::{char, digit1, space0, space1}, 
+    combinator::{map, map_res, opt}, 
     sequence::tuple, 
     IResult
 };
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Unit {
-    Val(f64),  // constant value - number (positive integer or positive float)
+    Val(f64),  // constant value - number (integer or float)
     Var(String), // variable name
     Random(Box<Unit>), // random value
     Exp(Box<Unit>, String, Box<Unit>) // expression, eg :size / 3
@@ -23,27 +23,38 @@ fn parse_random(input: &str) -> IResult<&str, Unit> {
     Ok((input, Unit::Random(Box::new(value))))
 }
 
-fn parse_number(input: &str) -> IResult<&str, Unit> {
+pub fn parse_number(input: &str) -> IResult<&str, Unit> {
     alt((
-        // parse float
+        // parse float with optional negative sign
         map_res(
             tuple((
+                opt(char('-')), // Optional negative sign
                 digit1,
-                char('.'), 
+                char('.'),
                 digit1,
             )),
-            |(integer, _, fraction): (&str, char, &str)| {
-                let value: f64 = format!("{}.{}", integer, fraction).parse().unwrap();
+            |(sign, integer, _, fraction): (Option<char>, &str, char, &str)| {
+                let mut value: f64 = format!("{}.{}", integer, fraction).parse().unwrap();
+                if sign.is_some() {
+                    value = -value;
+                }
                 Ok::<_, nom::Err<(&str, nom::error::ErrorKind)>>(Unit::Val(value))
             },
         ),
-        // parse positive integer
-        map_res(digit1, |digits: &str| {
-            let value: f64 = digits.parse().unwrap();
-            Ok::<_, nom::Err<(&str, nom::error::ErrorKind)>>(Unit::Val(value))
-        }),
+        // parse integer with optional negative sign
+        map_res(
+            tuple((opt(char('-')), digit1)),
+            |(sign, digits): (Option<char>, &str)| {
+                let mut value: f64 = digits.parse().unwrap();
+                if sign.is_some() {
+                    value = -value;
+                }
+                Ok::<_, nom::Err<(&str, nom::error::ErrorKind)>>(Unit::Val(value))
+            },
+        ),
     ))(input)
 }
+
 
 fn parse_variable(input: &str) -> IResult<&str, Unit> {
     let (input, _) = nom::bytes::complete::tag(":")(input)?;

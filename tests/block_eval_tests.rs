@@ -4,7 +4,7 @@ use lista7::evaluator::{environment::Env, turtle::Turtle, eval::eval_block};
 
 fn setup_env() -> Env {
     let mut env = Env::new();
-    env.set_var("x".to_string(), Unit::Val(100.0));
+    env.set_var("x".to_string(), 100.0);
     env
 }
 
