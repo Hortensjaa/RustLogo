@@ -124,17 +124,17 @@ pub fn eval_block(block: &Block, turtle: &mut Turtle, env: &mut Env) -> Option<(
                 let evaluated_args: Vec<f64> = args.iter()
                 .map(|arg| eval_unit(arg.clone(), env.clone())) 
                 .collect();
-            println!("{} called with args: {:#?}", name, evaluated_args);
+            println!("{} called with args: {:#?}", name, evaluated_args); // debug
             match f.unwrap() {
                 Block::Function(_, params, instructions) => {
                     match env.update_many_vars(params.clone(), evaluated_args) {
                         Ok(_) => {
                             for instruction in &instructions {
                                 if eval_block(instruction, turtle, env).is_none() {
-                                    return None; 
+                                    break;
                                 }
                             }
-                            env.remove_many_var(params);
+                            env.pop_many_vars(params);
                         }
                         Err(_) => { eprintln!("Wrong number of arguments") }
                     }

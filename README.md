@@ -40,9 +40,10 @@ is stop, I pass None instead of Some to upper levels and stop execution)
 Drawing history of lines to .svg file using svg library; images are saved in /images directory.
 
 ## Tests
-Note to myself: next time create tests in /src subdirectories, to avoid a lot of imports and public objects :<.
-However, everything is tested at list for mvp.
 /tests
+Note to myself: next time create tests in /src subdirectories, to avoid a lot of imports and public objects :<.
+However, everything is tested at least for mvp.
+
 
 # Todos
 - evaluation of more advanced expressions e.g. repcount * repcount / 30 (no idea how to parse it, for now i have workaround with changing to decimal)

@@ -2,7 +2,6 @@ use nom::{
     branch::alt,
     bytes::complete::{tag_no_case, tag, take_while1},
     character::complete::space1,
-    combinator::map, 
     IResult,
 };
 use std::collections::HashSet;

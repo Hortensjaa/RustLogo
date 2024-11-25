@@ -5,7 +5,7 @@ use super::super::parser::block::Block;
 // wrapper for local environment inside block
 #[derive(Debug, PartialEq, Clone)]
 pub struct Env {
-    vars: HashMap<String, f64>,
+    vars: HashMap<String, Vec<f64>>,
     functions: HashMap<String, Block>
 }
 
@@ -19,13 +19,13 @@ impl Env {
 
     pub fn get_var(&self, var_name: &str) -> Result<f64, String>  {
         match self.vars.get(var_name) {
-            Some(value) => Ok(value.clone()),
-            None => Err("Value {} not in environment".to_string()),
+            Some(stack) => Ok(*stack.last().ok_or_else(|| format!("Value {} not in environment", var_name))?),
+            None => Err(format!("Value {} not in environment", var_name))
         }
     }
 
     pub fn set_var(&mut self, var_name: String, val: f64) {
-        self.vars.insert(var_name, val);
+        self.vars.entry(var_name).or_insert_with(Vec::new).push(val);
     }
 
     pub fn update_many_vars(&mut self, params: Vec<String>, args: Vec<f64>) -> Result<(), String> {
@@ -34,18 +34,18 @@ impl Env {
         }
 
         for (param, arg) in params.into_iter().zip(args.into_iter()) {
-            self.vars.insert(param, arg);
+            self.set_var(param, arg);
         }
 
         Ok(())
     }
 
-    pub fn remove_var(&mut self, var_name: &str) -> Option<f64> {
-        self.vars.remove(var_name)
+    pub fn pop_var(&mut self, var_name: &str) -> Option<f64> {
+        self.vars.get_mut(var_name).and_then(|stack| stack.pop())
     }
 
-    pub fn remove_many_var(&mut self, params: Vec<String>) -> Vec<Option<f64>> {
-        params.into_iter().map(|key| self.vars.remove(&key)).collect()
+    pub fn pop_many_vars(&mut self, params: Vec<String>) -> Vec<Option<f64>> {
+        params.into_iter().map(|key| self.pop_var(&key)).collect()
     }
 
     pub fn get_fun(&self, fun_name: &str) -> Result<Block, String> {

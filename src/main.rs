@@ -3,7 +3,7 @@ mod evaluator;
 mod drawing;
 use std::fs;
 
-// assuming input file name and output file name are the same
+// assuming input file name and output file name are the same (but in different directiories)
 fn create_image(file_name: &str, size_x: f64, size_y: f64) {
 
     // read from file
@@ -41,6 +41,6 @@ fn create_image(file_name: &str, size_x: f64, size_y: f64) {
 
 
 fn main() {
-    create_image("drzewko", 800.0, 600.0);
+    create_image("fern", 800.0, 600.0);
 }
 
