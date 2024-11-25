@@ -26,7 +26,7 @@ impl Turtle {
             img_y: img_y,
             x: img_x / 2.0,  // start at the center of the screen
             y: img_y / 2.0,
-            angle: 90.0,      // head up :)
+            angle: 270.0,      // head up :)
             pen_down: true,
             pen_color: "black".to_string(),
             lines: Vec::new(), // lines history
@@ -35,9 +35,9 @@ impl Turtle {
 
     pub fn rotate(&mut self, direction: &str, degrees: f64) {
         if direction == "left" {
-            self.angle += degrees;
-        } else if direction == "right" {
             self.angle -= degrees;
+        } else if direction == "right" {
+            self.angle += degrees;
         } else {
             eprintln!("rotate: Wrong direction");
         }

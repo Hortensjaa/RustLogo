@@ -16,7 +16,7 @@ fn test_single_block() {
 
     eval_block(&block, &mut turtle, &mut env);
 
-    assert_eq!(turtle.y, 350.0); 
+    assert_eq!(turtle.y, 250.0); 
     assert_eq!(turtle.lines.len(), 1);
 }
 
@@ -34,7 +34,7 @@ fn test_if_block() {
 
     eval_block(&block, &mut turtle, &mut env);
 
-    assert_eq!(turtle.y, 350.0);
+    assert_eq!(turtle.y, 250.0);
     assert_eq!(turtle.lines.len(), 1);
 }
 
@@ -47,7 +47,7 @@ fn test_repeat_block() {
 
     eval_block(&block, &mut turtle, &mut env);
 
-    assert_eq!(turtle.y, 350.0);
+    assert_eq!(turtle.y, 250.0);
     assert_eq!(turtle.lines.len(), 5);
 }
 
@@ -71,7 +71,7 @@ fn test_function_and_call_block() {
     );
     eval_block(&call, &mut turtle, &mut env);
 
-    assert_eq!(turtle.y, 400.0);
+    assert_eq!(turtle.y, 200.0);
     assert_eq!(turtle.lines.len(), 1);
 }
 

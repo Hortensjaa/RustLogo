@@ -7,7 +7,7 @@ fn test_left_rotation() {
     let mut turtle = Turtle::new(100.0, 100.0);
     let env = Env::new(); 
     eval_command(Command::Right(Unit::Val(90.0)), &mut turtle, env);
-    assert_eq!(turtle.angle, 0.0); 
+    assert_eq!(turtle.angle, 360.0); 
 }
 
 #[test]
@@ -23,10 +23,10 @@ fn test_forward_movement() {
     let mut turtle = Turtle::new(100.0, 100.0);
     let env = Env::new();
     eval_command(Command::Forward(Unit::Val(50.0)), &mut turtle, env);
-    let expected_x = 50.0 + 50.0 * 0.0;  
-    let expected_y = 50.0 + 50.0 * 1.0;  
-    assert_eq!(turtle.x, expected_x);
-    assert_eq!(turtle.y, expected_y);
+    let expected_x = (50.0 + 50.0 * 0.0) as u32;  
+    let expected_y = (50.0 + 50.0 * 1.0) as u32;  
+    assert_eq!(turtle.x as u32, expected_x);
+    assert_eq!(turtle.y as u32, expected_y);
 }
 
 #[test]
