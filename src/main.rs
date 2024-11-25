@@ -4,7 +4,7 @@ mod drawing;
 use std::fs;
 
 // assuming input file name and output file name are the same (but in different directiories)
-fn create_image(file_name: &str, size_x: f64, size_y: f64) {
+pub fn create_image(file_name: &str, size_x: f64, size_y: f64) {
 
     // read from file
     let filename = format!("codes/{}.txt", file_name);
@@ -27,7 +27,7 @@ fn create_image(file_name: &str, size_x: f64, size_y: f64) {
             Vec::new()
         }
     };
-    // println!("{:#?}", parsed_program); // debug
+    println!("{:#?}", parsed_program); // debug
 
     // evaluate
     let mut env = evaluator::environment::Env::new();
@@ -41,6 +41,10 @@ fn create_image(file_name: &str, size_x: f64, size_y: f64) {
 
 
 fn main() {
-    create_image("drzewko", 800.0, 600.0);
+    create_image("star", 800.0, 600.0);
+    create_image("squares", 800.0, 600.0);
+    create_image("tree", 800.0, 600.0);
+    create_image("fern", 800.0, 600.0);
+    create_image("spiral", 800.0, 600.0); // extra: colorful spiral
 }
 

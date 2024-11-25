@@ -1,10 +1,5 @@
 use nom::{
-    branch::alt, 
-    bytes::complete::{tag, tag_no_case, take_while1}, 
-    character::complete::{char, digit1, space0, space1}, 
-    combinator::{map, map_res, opt}, 
-    sequence::tuple, 
-    IResult
+    branch::alt, bytes::complete::{tag, tag_no_case, take_while1}, character::complete::{alphanumeric1, char, digit1, multispace0, space0, space1}, combinator::{map, map_res, opt}, multi::many1, sequence::{delimited, preceded, tuple}, IResult
 };
 
 #[derive(Debug, PartialEq, Clone)]
@@ -12,7 +7,8 @@ pub enum Unit {
     Val(f64),  // constant value - number (integer or float)
     Var(String), // variable name
     Random(Box<Unit>), // random value
-    Exp(Box<Unit>, String, Box<Unit>) // expression, eg :size / 3
+    Exp(Box<Unit>, String, Box<Unit>), // expression, eg :size / 3
+    Pick(Vec<String>)
 }
 
 
@@ -21,6 +17,18 @@ fn parse_random(input: &str) -> IResult<&str, Unit> {
     let (input, _) = space1(input)?;
     let (input, value) = parse_unit(input)?;
     Ok((input, Unit::Random(Box::new(value))))
+}
+
+
+fn parse_pick(input: &str) -> IResult<&str, Unit> {
+    let (input, _) = tag_no_case("pick")(input)?;
+    let (input, _) = space1(input)?;
+    let (input, list) = delimited(
+        char('['), 
+        many1(map(preceded(multispace0, alphanumeric1), |s: &str| s.to_string())), // Zbierz elementy jako stringi
+        preceded(multispace0, char(']')),
+    )(input)?;
+    Ok((input, Unit::Pick(list)))
 }
 
 pub fn parse_number(input: &str) -> IResult<&str, Unit> {

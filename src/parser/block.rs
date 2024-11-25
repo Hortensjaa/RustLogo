@@ -102,7 +102,7 @@ fn parse_call(input: &str) -> IResult<&str, Block> {
         )(input)
     }
 
-    let reserved_keywords = ["to", "repeat", "if", "end"]; // "nielegalne" słowa kluczowe
+    let reserved_keywords = ["to", "repeat", "if", "end", "pick", "setcolor"]; // illegal keywords
     let (input, name) = map_res(
         take_while1(|c: char| c.is_alphanumeric() || c == '_'),
         |s: &str| {

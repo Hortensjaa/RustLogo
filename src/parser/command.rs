@@ -1,8 +1,5 @@
 use nom::{
-    branch::alt,
-    bytes::complete::{tag_no_case, tag, take_while1},
-    character::complete::space1,
-    IResult,
+    branch::alt, bytes::complete::{tag, tag_no_case, take_while1}, character::complete::{alpha0, alpha1, alphanumeric1, char, multispace0, multispace1, space1}, combinator::map, multi::{many1, separated_list1}, sequence::{delimited, preceded}, IResult
 };
 use std::collections::HashSet;
 
@@ -19,6 +16,8 @@ pub enum Command {
     PenUp(),
     PenDown(),
     SetColor(String),
+    SetColorPick(Vec<String>),
+    SetTurtle(Unit),
     Stop(),
     HideTurtle(),
     ShowTurtle(),
@@ -115,6 +114,27 @@ fn parse_setcolor(input: &str) -> IResult<&str, Command> {
     }
 }
 
+fn parse_setcolorpick(input: &str) -> IResult<&str, Command> {
+    let (input, _) = alt((tag_no_case("setcolor"), tag_no_case("sc")))(input)?;
+    let (input, _) = space1(input)?;
+    let (input, _) = tag_no_case("pick")(input)?;
+    let (input, _) = space1(input)?;
+    let (input, list) = delimited(
+        char('['), 
+        many1(preceded(multispace0, alpha1)),
+        preceded(multispace0, char(']')),
+    )(input)?;
+    let strings = list.into_iter().map(|s| s.to_string()).collect();
+    Ok((input, Command::SetColorPick(strings))) 
+}
+
+fn parse_setturtle(input: &str) -> IResult<&str, Command> {
+    let (input, _) = tag_no_case("setturtle")(input)?;
+    let (input, _) = space1(input)?;
+    let (input, value) = parse_unit(input)?;
+    Ok((input, Command::SetTurtle(value)))
+}
+
 pub fn parse_command(input: &str) -> IResult<&str, Command> {
     alt((
         parse_forward, 
@@ -125,11 +145,13 @@ pub fn parse_command(input: &str) -> IResult<&str, Command> {
         parse_wait,
         parse_pendown,
         parse_penup,
+        parse_setcolorpick,
         parse_setcolor,
         parse_stop,
         parse_showturtle,
         parse_hideturtle,
-        parse_window
+        parse_window,
+        parse_setturtle,
     ))(input)
 }
 

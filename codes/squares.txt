@@ -3,7 +3,7 @@ to square :length
 end 
 
 to randomcolor 
-    setcolor "green 
+    setcolor pick [ red orange yellow green blue violet ]
 end 
 
 clearscreen 

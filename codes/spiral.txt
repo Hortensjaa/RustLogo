@@ -1,0 +1,13 @@
+to square :size
+  repeat 4 [forward :size right 90]
+end
+to drawspiral :size :iterations
+  if :iterations == 0 [ stop ]
+  setcolor pick [blue pink violet red]
+  square :size
+  forward :size / 2
+  right 15
+  drawspiral :size * 0.9 :iterations - 1
+end
+clearscreen
+drawspiral 100 20 

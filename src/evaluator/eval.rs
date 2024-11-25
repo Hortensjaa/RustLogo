@@ -4,7 +4,7 @@ use super::super::parser::command::Command;
 use super::super::parser::block::Block;
 use super::turtle::Turtle;
 use super::environment::Env;
-use rand::Rng;
+use rand::{seq::SliceRandom, thread_rng, Rng};
 
 
 pub fn eval_unit(unit: Unit, env: Env) -> f64 {
@@ -37,7 +37,8 @@ pub fn eval_unit(unit: Unit, env: Env) -> f64 {
             let mut rng = rand::thread_rng();
             let random_number: u32 = rng.gen_range(1..bound_val);
             random_number as f64
-        }
+        },
+        _ => 0.0 // not evaluated Units
     }
 }
 
@@ -66,6 +67,14 @@ pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) -> Option<(
         },
         Command::SetColor(color) => {
             turtle.change_color(color);
+        },
+        Command::SetColorPick(colors) => {
+            let mut rng = thread_rng();
+            if let Some(random_color) = colors.choose(&mut rng) {
+                turtle.change_color(random_color.to_string());
+            } else {
+                eprintln!("Empty vector");
+            }
         }
         Command::Stop() => {return None},
         _ => {} // some commands are ignored, but it is desired behaviour (e.g. showturtle and window doesn't change my image)

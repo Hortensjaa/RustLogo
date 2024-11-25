@@ -1,0 +1,7 @@
+<svg height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+<line stroke="black" stroke-width="2" x1="400" x2="400" y1="300" y2="200"/>
+<line stroke="black" stroke-width="2" x1="400" x2="458.77852522924735" y1="200" y2="280.9016994374947"/>
+<line stroke="black" stroke-width="2" x1="458.77852522924735" x2="363.672873599732" y1="280.9016994374947" y2="250"/>
+<line stroke="black" stroke-width="2" x1="363.672873599732" x2="458.7785252292473" y1="250" y2="219.09830056250522"/>
+<line stroke="black" stroke-width="2" x1="458.7785252292473" x2="400" y1="219.09830056250522" y2="300"/>
+</svg>
