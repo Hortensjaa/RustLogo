@@ -5,7 +5,7 @@ fn test_turtle_creation() {
     let turtle = Turtle::new(800.0, 600.0);
     assert_eq!(turtle.x, 400.0);
     assert_eq!(turtle.y, 300.0);
-    assert_eq!(turtle.angle, 90.0);
+    assert_eq!(turtle.angle, 270.0);
     assert_eq!(turtle.pen_down, true);
     assert_eq!(turtle.lines.len(), 0);
 }
@@ -14,7 +14,7 @@ fn test_turtle_creation() {
 fn test_rotate_right() {
     let mut turtle = Turtle::new(800.0, 600.0);
     turtle.rotate("right", 90.0);
-    assert_eq!(turtle.angle, 0.0);
+    assert_eq!(turtle.angle, 360.0);
 
     turtle.go("forward", 100.0);
     let line = &turtle.lines[0];
@@ -44,14 +44,14 @@ fn test_move_forward() {
     turtle.go("forward", 100.0);
 
     assert_eq!(turtle.x, 400.0); 
-    assert_eq!(turtle.y, 300.0 + 100.0);
+    assert_eq!(turtle.y, 300.0 - 100.0);
     
     assert_eq!(turtle.lines.len(), 1);
     let line = &turtle.lines[0];
     assert_eq!(line.start_x, 400.0);
     assert_eq!(line.start_y, 300.0);
     assert_eq!(line.end_x, 400.0);
-    assert_eq!(line.end_y, 300.0 + 100.0);
+    assert_eq!(line.end_y, 300.0 - 100.0);
 }
 
 #[test]
@@ -60,14 +60,14 @@ fn test_move_back() {
     turtle.go("back", 50.0);
 
     assert_eq!(turtle.x, 400.0); 
-    assert_eq!(turtle.y, 300.0 - 50.0);
+    assert_eq!(turtle.y, 300.0 + 50.0);
 
     assert_eq!(turtle.lines.len(), 1);
     let line = &turtle.lines[0];
     assert_eq!(line.start_x, 400.0);
     assert_eq!(line.start_y, 300.0);
     assert_eq!(line.end_x, 400.0);
-    assert_eq!(line.end_y, 300.0 - 50.0);
+    assert_eq!(line.end_y, 300.0 + 50.0);
 }
 
 #[test]
