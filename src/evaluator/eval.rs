@@ -68,7 +68,7 @@ pub fn eval_command(command: Command, turtle: &mut Turtle, env: Env) -> Option<(
             turtle.change_color(color);
         }
         Command::Stop() => {return None},
-        _ => {}
+        _ => {} // some commands are ignored, but it is desired behaviour (e.g. showturtle and window doesn't change my image)
     }
     Some(())
 }
